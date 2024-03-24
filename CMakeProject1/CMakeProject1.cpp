@@ -68,11 +68,11 @@ int main()
 	}
 	std::string tc;
 	bool w = false;
-	unsigned char tr = 0;
+	unsigned short tr = 0;
 	while (w == false)
 	{
 		BN_div(balance_eth_ex, balance_eth_remmi, balance_eth_ex, balance_eth_ft, bz);
-		BN_bn2bin(balance_eth_remmi, &tr);
+		BN_bn2lebinpad(balance_eth_remmi, (unsigned char*)&tr, 2);
 		tc = tc + (char)tr;
 
 		w = BN_is_zero(balance_eth_ex);
