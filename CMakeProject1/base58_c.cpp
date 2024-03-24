@@ -195,12 +195,12 @@ bool b58enc(char* b58 /* out */ ,  size_t *b58sz /* in - out */ , const void *da
 	*b58sz = i + 1;
 	return true;
 }
-bool b58check_enc(char *b58c /* out */ , size_t *b58c_sz /* in - out */ , uint8_t ver, const void *data /* in */ , size_t datasz /* in */ )
+bool b58check_enc(char *b58c /* out */ , size_t *b58c_sz /* in - out */ , uint8_t v, const void *data /* in */ , size_t datasz /* in */ )
 {
 	uint8_t *buf = new uint8_t[1 + datasz + 32];
 	uint8_t *hash = &buf[1 + datasz];
 	
-	buf[0] = ver;
+	buf[0] = v;
 	memcpy(&buf[1], data, datasz);
 	if (!my_dblsha256(hash, buf, datasz + 1))
 	{

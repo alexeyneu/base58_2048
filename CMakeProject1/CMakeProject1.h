@@ -4,6 +4,7 @@
 #pragma once
 
 #include <iostream>
+#include "libbase58.h"
 
 
 // TODO: Reference additional headers your program requires here.

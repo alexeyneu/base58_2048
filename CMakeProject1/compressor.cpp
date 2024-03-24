@@ -1,11 +1,15 @@
 ﻿
 
 #include "CMakeProject1.h"
-#include <openssl\bn.h>
+#include <openssl/sha.h>
+#include <openssl/bn.h>
 #include <vector>
 #include <string>
 #include <algorithm>
 #include <fstream>
+#include <cstring>
+
+
 
 
 struct offstring
@@ -16,7 +20,7 @@ struct offstring
 int main(int argc, char *argv[])
 {
 	
-	if (argc > 2)
+	if (argc > 3)
 	{
 		std::cerr << std::endl << "no go" << std::endl;
 		return 0;
@@ -26,11 +30,15 @@ int main(int argc, char *argv[])
 		std::cerr << std::endl << "where's the" << std::endl;
 		return 0;
 	}
-
+	if (argc == 3 && ((std::string(argv[1]) == "-wif24") == false))
+	{
+		std::cerr << std::endl << "no go" << std::endl;
+		return 0;
+	}
 	
 	std::vector<std::string> b;
 
-	std::ifstream fw(argv[1]);
+	std::ifstream fw(argc == 3 ? argv[2] : argv[1]);
 	if (fw.fail())
 	{
 		std::cerr << std::endl << "not found" << std::endl;
@@ -90,16 +98,15 @@ int main(int argc, char *argv[])
 
 		}
 
-		unsigned short exp = std::distance(offstring::disclaimer.cbegin(), rexx) ;
-
-		BIGNUM* balance_eth_exmk_e = BN_lebin2bn((unsigned char*)&exp, 2, NULL);
+		unsigned int exp = std::distance(offstring::disclaimer.cbegin(), rexx) ;
+		BIGNUM* balance_eth_exmk_e = BN_lebin2bn((unsigned char*)&exp, 4, NULL);
 		BN_mul(balance_eth_exm_e, balance_eth_h_e, balance_eth_exmk_e, bz);
 		BN_add(balance_eth_ex_e, balance_eth_ex_e, balance_eth_exm_e);
 		BN_mul(balance_eth_h_e, balance_eth_h_e, balance_eth_lake, bz);
 		BN_free(balance_eth_exmk_e);
 	}
 	int cw = 0;
-	unsigned char tr_e = 0;
+	unsigned short tr_e = 0;
 
 	static const char b58digits_ordered[59] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 	std::string harbour;
@@ -107,7 +114,7 @@ int main(int argc, char *argv[])
 	while (w == false)
 	{
 		BN_div(balance_eth_ex_e, balance_eth_remmi_e, balance_eth_ex_e, balance_eth_f, bz);
-		BN_bn2bin(balance_eth_remmi_e, &tr_e);
+		BN_bn2lebinpad(balance_eth_remmi_e, (unsigned char*)&tr_e, 2);
 		harbour = harbour + b58digits_ordered[tr_e];
 
 		w = BN_is_zero(balance_eth_ex_e);
@@ -117,15 +124,62 @@ int main(int argc, char *argv[])
 	for (int h = 0; h < zerocount; h++)
 		harbour.insert(harbour.cbegin(), '1');
 
-	std::cout << std::endl << harbour << std::endl;
-	BN_free(balance_eth_ex_e);
-	BN_free(balance_eth_exm_e);
-	BN_free(balance_eth_remmi_e);
-	BN_free(balance_eth_h_e);
-	BN_free(balance_eth_f);
-	BN_free(balance_eth_lake);
-	BN_CTX_free(bz);
+	if (argc == 2)
+	{
+		std::cout << std::endl << harbour << std::endl;
+		BN_free(balance_eth_ex_e);
+		BN_free(balance_eth_exm_e);
+		BN_free(balance_eth_remmi_e);
+		BN_free(balance_eth_h_e);
+		BN_free(balance_eth_f);
+		BN_free(balance_eth_lake);
+		BN_CTX_free(bz);
+	}
+	else
+	{
+		if (b.size() == 24 == false)
+		{
+			std::cerr << std::endl << "do not mess with it" << std::endl;
+			BN_free(balance_eth_ex_e);
+			BN_free(balance_eth_exm_e);
+			BN_free(balance_eth_remmi_e);
+			BN_free(balance_eth_h_e);
+			BN_free(balance_eth_f);
+			BN_free(balance_eth_lake);
+			BN_CTX_free(bz);
+			return -5;
+		}
+		unsigned char bc[7250] = {};
+		size_t wq = 7250;
+		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 
+		unsigned char wb_final[250] = {};
+		unsigned char wb_f[250] = {};
+		wb_final[0] = 0x80;
+
+		memcpy(wb_final + 1, bc, wq);
+		unsigned char h[250] = {};
+		unsigned char hf[250] = {};
+		memcpy(wb_f, wb_final, wq + 1);
+		SHA256(wb_f, 33, h);
+		SHA256(h, 32, hf);
+		memcpy(wb_final + 33, hf, 4);
+		char* t = new char[7250]();
+		size_t cw = 7250;
+		b58enc(t, &cw, (void*)wb_final, (size_t)(1 + 32 + 4));
+
+		std::string whydah = t;
+		std::cout << std::endl << whydah << std::endl;
+		BN_free(balance_eth_ex_e);
+		BN_free(balance_eth_exm_e);
+		BN_free(balance_eth_remmi_e);
+		BN_free(balance_eth_h_e);
+		BN_free(balance_eth_f);
+		BN_free(balance_eth_lake);
+		BN_CTX_free(bz);
+		delete[] t;
+	}
 	return 0;
 }
 

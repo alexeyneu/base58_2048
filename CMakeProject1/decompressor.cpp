@@ -1,10 +1,9 @@
 ﻿
 #include "CMakeProject1.h"
-#include <openssl\bn.h>
+#include <openssl/bn.h>
 #include <vector>
 #include <string>
 #include <algorithm>
-
 
 
 
@@ -26,7 +25,7 @@ struct offstring
 
 int main(int argc , char *argv[])
 {
-	if (argc > 2)
+	if (argc > 3)
 	{
 		std::cerr << std::endl << "no go" << std::endl;
 		return 0;
@@ -36,8 +35,34 @@ int main(int argc , char *argv[])
 		std::cerr << std::endl << "where's the string" << std::endl;
 		return 0;
 	}
+	if (argc == 3 && ((std::string(argv[1]) == "-wif24") == false))
+	{
+		std::cerr << std::endl << "no go" << std::endl;
+		return 0;
+	}
 
-	std::string a = argv[1];
+	std::string a = argc == 3 ? argv[2] : argv[1];
+	if (argc == 2 == false)
+	{
+		unsigned char bc[3250] = {};
+		size_t wq = a.length() * 15;
+		bool ho = b58tobin((void*)bc, &wq, a.c_str(), a.length());
+		if (wq == 37 == false)
+		{
+			std::cerr << std::endl << "do not mess with it" << std::endl;
+			return -5;
+		}
+		ho = b58tobin((void*)bc, &wq, a.c_str(), a.length());
+		unsigned char wb_final[250] = {};
+		memcpy(wb_final, bc + 1, 32);
+		char* t = new char[3250]();
+		size_t cw = 3250;
+		b58enc(t, &cw, (void*)wb_final, 32);
+		a = t;
+
+		delete[] t;
+	}
+
 	BIGNUM* balance_eth_ex = BN_new();
 	BIGNUM* balance_eth_exm = BN_new();
 	BIGNUM* balance_eth_remmi = BN_new();
@@ -104,7 +129,6 @@ int main(int argc , char *argv[])
 		BN_div(balance_eth_ex, balance_eth_remmi, balance_eth_ex, balance_eth_lake, bz);
 		BN_bn2lebinpad(balance_eth_remmi, (unsigned char *)&t, 2);
 		farstone.insert(farstone.cbegin(), offstring::disclaimer[t]);
-
 		w = BN_is_zero(balance_eth_ex);
 	}
 

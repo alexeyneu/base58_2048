@@ -6,7 +6,6 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include "libbase58.h"
 
 
 
@@ -27,9 +26,11 @@ int main()
 {
 	char* t = new char[1000]();
 	size_t c = 1000;
-	const unsigned char b[19] = "uiyiuiuyijiojijjio";  /* last byte is '\0' coz of b[] dealt with by compiler.
-(size_t)sizeof(b) - 1 as last arg removes it from source binary block. */
+	const unsigned char b[19] = "uiyiuiuyijiojijjio";  /* last byte is '\0' coz of b[] dealt with by compiler.(size_t)sizeof(b) - 1 as last arg removes it from source binary block. */
 	b58enc(t, &c, (void*)b, (size_t)sizeof(b));
+	std::string tier((char *)b);
+	std::cout << tier.size() << std::endl;
+	std::cout << strlen(tier.c_str()) << std::endl;
 
 	std::cout << t << std::endl;
 	unsigned char bc[250] = {};
@@ -76,7 +77,7 @@ int main()
 
 		w = BN_is_zero(balance_eth_ex);
 	}
-	std::reverse((unsigned char *)&tc[0], (unsigned char*)&tc[0] + 19);
+	std::reverse((unsigned char *)&tc[0], (unsigned char*)&tc[0] + 19 /* '\0' in game too */ );
 	std::cout << std::endl << tc << std::endl << 2048 % 58;
 
 

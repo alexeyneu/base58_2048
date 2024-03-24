@@ -5,8 +5,8 @@ cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
 add_executable (CMakeProject1 "CMakeProject1.cpp" "CMakeProject1.h" "base58_c.cpp" "libbase58.h")
-add_executable (decompressor "decompressor.cpp" "CMakeProject1.h")
-add_executable (compressor "compressor.cpp" "CMakeProject1.h" )
+add_executable (decompressor "decompressor.cpp" "CMakeProject1.h" "base58_c.cpp" "libbase58.h")
+add_executable (compressor "compressor.cpp" "CMakeProject1.h" "base58_c.cpp" "libbase58.h" )
 include_directories("${PROJECT_SOURCE_DIR}/New Folder/include")
 
 
