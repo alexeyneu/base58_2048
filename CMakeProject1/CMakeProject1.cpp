@@ -103,15 +103,14 @@ int main()
 	unsigned char bt[50] = {};
 	w = false;
 	int cw = 0;
-	unsigned char tr_e = 0;
-
+	unsigned short tr_e = 0;
 	static const char b58digits_ordered[59] = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 	std::string tc_e;
 
 	while (w == false)
 	{
 		BN_div(balance_eth_ex_e, balance_eth_remmi_e, balance_eth_ex_e, balance_eth_f, bz);
-		BN_bn2bin(balance_eth_remmi_e, &tr_e);
+		BN_bn2lebinpad(balance_eth_remmi_e, (unsigned char*)&tr_e, 2);
 		tc_e = tc_e + b58digits_ordered[tr_e];
 
 		w = BN_is_zero(balance_eth_ex_e);
