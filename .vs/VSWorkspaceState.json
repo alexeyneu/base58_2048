@@ -1,9 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\CMakeProject1",
-    "\\out"
+    "\\CMakeProject1"
   ],
-  "SelectedNode": "\\CMakeProject1\\decompressor.cpp",
+  "SelectedNode": "\\CMakeProject1\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }

@@ -2,7 +2,7 @@
 //
 
 #include "CMakeProject1.h"
-#include <openssl\bn.h>
+#include <openssl/bn.h>
 #include <vector>
 #include <string>
 #include <algorithm>
