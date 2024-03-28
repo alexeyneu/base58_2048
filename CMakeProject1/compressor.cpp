@@ -8,7 +8,25 @@
 #include <algorithm>
 #include <fstream>
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 
+
+const	std::string bin2hex(const unsigned char* p, size_t length) {
+	std::stringstream f;
+	f << std::hex << std::setfill('0');
+	for (int i = 0; i < length; i++) f << std::setw(2) << (int)p[i];
+	return f.str();
+}
+
+size_t hex2bin(unsigned char* p, const char* hexstr, const size_t length) {
+	size_t wcount = 0;
+	while (wcount++ < length && *hexstr && *(hexstr + 1)) {    //last condition cause np if check fails on middle one.thats coz of short-circuit evaluation
+		sscanf(hexstr, "%2hhx", p++);  //7x slower than tables but doesnt metter 
+		hexstr = hexstr + 2;
+	}
+	return  --wcount;     // error check here is a waste  
+}
 
 
 
@@ -30,7 +48,7 @@ int main(int argc, char *argv[])
 		std::cerr << std::endl << "where's the" << std::endl;
 		return 0;
 	}
-	if (argc == 3 && ((std::string(argv[1]) == "-wif24") == false))
+	if (argc == 3 && ((std::string(argv[1]) == "-wif24" == false) && (std::string(argv[1]) == "-hex32_24" == false)))
 	{
 		std::cerr << std::endl << "no go" << std::endl;
 		return 0;
@@ -135,7 +153,7 @@ int main(int argc, char *argv[])
 		BN_free(balance_eth_lake);
 		BN_CTX_free(bz);
 	}
-	else
+	if ((argc == 2 == false) && std::string(argv[1]) == "-wif24")
 	{
 		if (b.size() == 24 == false)
 		{
@@ -179,6 +197,39 @@ int main(int argc, char *argv[])
 		BN_free(balance_eth_lake);
 		BN_CTX_free(bz);
 		delete[] t;
+	}
+	if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
+	{
+		if (b.size() == 24 == false)
+		{
+			std::cerr << std::endl << "do not mess with it" << std::endl;
+			BN_free(balance_eth_ex_e);
+			BN_free(balance_eth_exm_e);
+			BN_free(balance_eth_remmi_e);
+			BN_free(balance_eth_h_e);
+			BN_free(balance_eth_f);
+			BN_free(balance_eth_lake);
+			BN_CTX_free(bz);
+			return -5;
+		}
+		unsigned char bc[7250] = {};
+		size_t wq = 7250;
+		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+
+		unsigned char wb_final[250] = {};
+
+		memcpy(wb_final, bc, wq);
+		;
+		std::string whydah = bin2hex(wb_final, 32);
+		std::cout << std::endl << whydah << std::endl;
+		BN_free(balance_eth_ex_e);
+		BN_free(balance_eth_exm_e);
+		BN_free(balance_eth_remmi_e);
+		BN_free(balance_eth_h_e);
+		BN_free(balance_eth_f);
+		BN_free(balance_eth_lake);
+		BN_CTX_free(bz);
 	}
 	return 0;
 }
