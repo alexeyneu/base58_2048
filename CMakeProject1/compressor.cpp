@@ -141,35 +141,34 @@ int main(int argc, char *argv[])
 
 	for (int h = 0; h < zerocount; h++)
 		harbour.insert(harbour.cbegin(), '1');
+	BN_free(balance_eth_ex_e);
+	BN_free(balance_eth_exm_e);
+	BN_free(balance_eth_remmi_e);
+	BN_free(balance_eth_h_e);
+	BN_free(balance_eth_f);
+	BN_free(balance_eth_lake);
+	BN_CTX_free(bz);
 
 	if (argc == 2)
 	{
 		std::cout << std::endl << harbour << std::endl;
-		BN_free(balance_eth_ex_e);
-		BN_free(balance_eth_exm_e);
-		BN_free(balance_eth_remmi_e);
-		BN_free(balance_eth_h_e);
-		BN_free(balance_eth_f);
-		BN_free(balance_eth_lake);
-		BN_CTX_free(bz);
 	}
 	if ((argc == 2 == false) && std::string(argv[1]) == "-wif24")
 	{
-		if (b.size() == 24 == false)
+		if (b.size() > 24)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
-			BN_free(balance_eth_ex_e);
-			BN_free(balance_eth_exm_e);
-			BN_free(balance_eth_remmi_e);
-			BN_free(balance_eth_h_e);
-			BN_free(balance_eth_f);
-			BN_free(balance_eth_lake);
-			BN_CTX_free(bz);
 			return -5;
 		}
 		unsigned char bc[750] = {};
 		size_t wq = 750;
 		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+		if ( wq == 32 == false)
+		{
+			std::cerr << std::endl << "do not mess with it" << std::endl;
+			return -5;
+		}
+
 		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 
 		unsigned char wb_final_compressed[250] = {};
@@ -211,33 +210,26 @@ int main(int argc, char *argv[])
 		std::string mill = t_compressed;
 		std::cout << std::endl << mill << std::endl;
 
-		BN_free(balance_eth_ex_e);
-		BN_free(balance_eth_exm_e);
-		BN_free(balance_eth_remmi_e);
-		BN_free(balance_eth_h_e);
-		BN_free(balance_eth_f);
-		BN_free(balance_eth_lake);
-		BN_CTX_free(bz);
 		delete[] t_compressed;
 		delete[] t;
 	}
 	if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
 	{
-		if (b.size() == 24 == false)
+		if (b.size() > 24)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
-			BN_free(balance_eth_ex_e);
-			BN_free(balance_eth_exm_e);
-			BN_free(balance_eth_remmi_e);
-			BN_free(balance_eth_h_e);
-			BN_free(balance_eth_f);
-			BN_free(balance_eth_lake);
-			BN_CTX_free(bz);
 			return -5;
 		}
 		unsigned char bc[850] = {};
 		size_t wq = 850;
 		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+		if (wq == 32 == false)
+		{
+			std::cerr << std::endl << "do not mess with it" << std::endl;
+			return -5;
+		}
+
+
 		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 
 		unsigned char wb_final[250] = {};
@@ -248,13 +240,6 @@ int main(int argc, char *argv[])
 		std::string draw = bin2hex(wb_final, 32);
 		std::cout << std::endl << draw << std::endl;
 
-		BN_free(balance_eth_ex_e);
-		BN_free(balance_eth_exm_e);
-		BN_free(balance_eth_remmi_e);
-		BN_free(balance_eth_h_e);
-		BN_free(balance_eth_f);
-		BN_free(balance_eth_lake);
-		BN_CTX_free(bz);
 	}
 	return 0;
 }

@@ -63,7 +63,7 @@ int main(int argc , char *argv[])
 	std::string a = argc == 3 ? argv[2] : argv[1];
 	if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
 	{
-		unsigned char bc[3250] = {};
+		unsigned char bc[850] = {};
 
 		size_t zx = hex2bin(bc, a.c_str(), 32);
 
@@ -84,8 +84,8 @@ int main(int argc , char *argv[])
 
 	if ((argc == 2 == false) && std::string(argv[1]) == "-wif24")
 	{
-		unsigned char bc[3250] = {};
-		size_t wq = a.length() * 15;
+		unsigned char bc[850] = {};
+		size_t wq = 850;
 		bool ho = b58tobin((void*)bc, &wq, a.c_str(), a.length());
 		if (wq == 37 == false && wq == 38 == false)
 		{
@@ -95,8 +95,8 @@ int main(int argc , char *argv[])
 		ho = b58tobin((void*)bc, &wq, a.c_str(), a.length());
 		unsigned char wb_final[250] = {};
 		memcpy(wb_final, bc + 1, 32);
-		char* t = new char[3250]();
-		size_t cw = 3250;
+		char* t = new char[850]();
+		size_t cw = 850;
 		b58enc(t, &cw, (void*)wb_final, 32);
 		a = t;
 		delete[] t;
@@ -174,7 +174,7 @@ int main(int argc , char *argv[])
 	for(int b = 0; b < zerocount; b++)
 		farstone.insert(farstone.cbegin(), offstring::disclaimer[0]);
 
-	if (argc == 3 && farstone.size() == 24 == false)
+	if (argc == 3 && farstone.size() > 24)
 	{
 		std::cerr << std::endl << "leading zeroes, will not work" << std::endl;
 		BN_free(balance_eth_ex);
