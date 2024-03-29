@@ -167,10 +167,29 @@ int main(int argc, char *argv[])
 			BN_CTX_free(bz);
 			return -5;
 		}
-		unsigned char bc[7250] = {};
-		size_t wq = 7250;
+		unsigned char bc[750] = {};
+		size_t wq = 750;
 		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+
+		unsigned char wb_final_compressed[250] = {};
+		unsigned char wb_f_compressed[250] = {};
+
+		wb_final_compressed[0] = 0x80;
+
+		memcpy(wb_final_compressed + 1, bc, wq);
+		wb_final_compressed[wq + 1] = 0x01;
+
+		unsigned char h_compressed[250] = {};
+		unsigned char hf_compressed[250] = {};
+		memcpy(wb_f_compressed, wb_final_compressed, wq + 2);
+		SHA256(wb_f_compressed, wq + 2, h_compressed);
+		SHA256(h_compressed, 32, hf_compressed);
+		memcpy(wb_final_compressed + wq + 2, hf_compressed, 4);
+		char* t_compressed = new char[750]();
+		size_t cw_copmressed = 750;
+		b58enc(t_compressed, &cw_copmressed, (void*)wb_final_compressed, (size_t)(38));
+
 
 		unsigned char wb_final[250] = {};
 		unsigned char wb_f[250] = {};
@@ -180,15 +199,18 @@ int main(int argc, char *argv[])
 		unsigned char h[250] = {};
 		unsigned char hf[250] = {};
 		memcpy(wb_f, wb_final, wq + 1);
-		SHA256(wb_f, 33, h);
+		SHA256(wb_f, wq + 1, h);
 		SHA256(h, 32, hf);
-		memcpy(wb_final + 33, hf, 4);
-		char* t = new char[7250]();
-		size_t cw = 7250;
+		memcpy(wb_final + wq + 1, hf, 4);
+		char* t = new char[750]();
+		size_t cw = 750;
 		b58enc(t, &cw, (void*)wb_final, (size_t)(1 + 32 + 4));
 
 		std::string whydah = t;
 		std::cout << std::endl << whydah << std::endl;
+		std::string mill = t_compressed;
+		std::cout << std::endl << mill << std::endl;
+
 		BN_free(balance_eth_ex_e);
 		BN_free(balance_eth_exm_e);
 		BN_free(balance_eth_remmi_e);
@@ -196,6 +218,7 @@ int main(int argc, char *argv[])
 		BN_free(balance_eth_f);
 		BN_free(balance_eth_lake);
 		BN_CTX_free(bz);
+		delete[] t_compressed;
 		delete[] t;
 	}
 	if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
@@ -212,8 +235,8 @@ int main(int argc, char *argv[])
 			BN_CTX_free(bz);
 			return -5;
 		}
-		unsigned char bc[7250] = {};
-		size_t wq = 7250;
+		unsigned char bc[850] = {};
+		size_t wq = 850;
 		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 
@@ -221,8 +244,10 @@ int main(int argc, char *argv[])
 
 		memcpy(wb_final, bc, wq);
 		;
-		std::string whydah = bin2hex(wb_final, 32);
-		std::cout << std::endl << whydah << std::endl;
+
+		std::string draw = bin2hex(wb_final, 32);
+		std::cout << std::endl << draw << std::endl;
+
 		BN_free(balance_eth_ex_e);
 		BN_free(balance_eth_exm_e);
 		BN_free(balance_eth_remmi_e);

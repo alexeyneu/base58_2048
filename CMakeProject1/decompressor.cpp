@@ -87,7 +87,7 @@ int main(int argc , char *argv[])
 		unsigned char bc[3250] = {};
 		size_t wq = a.length() * 15;
 		bool ho = b58tobin((void*)bc, &wq, a.c_str(), a.length());
-		if (wq == 37 == false)
+		if (wq == 37 == false && wq == 38 == false)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
