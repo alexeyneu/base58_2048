@@ -71,8 +71,6 @@ int main(int argc, char *argv[])
 		b.insert(b.cend(), last);
 	} while (fw.bad() == false);
 
-
-
 	unsigned char fx = 58;
 	BIGNUM* balance_eth_f = BN_lebin2bn(&fx, 1, NULL);
 	unsigned short wa = 2048;
