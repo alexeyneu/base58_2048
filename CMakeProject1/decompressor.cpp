@@ -173,24 +173,6 @@ int main(int argc , char *argv[])
 
 	for(int b = 0; b < zerocount; b++)
 		farstone.insert(farstone.cbegin(), offstring::disclaimer[0]);
-
-	if (argc == 3 && farstone.size() > 24)
-	{
-		std::cerr << std::endl << "leading zeroes, will not work" << std::endl;
-		BN_free(balance_eth_ex);
-		BN_free(balance_eth_exm);
-		BN_free(balance_eth_remmi);
-		BN_free(balance_eth_h);
-		BN_free(balance_eth_f);
-		BN_free(balance_eth_lake);
-		BN_CTX_free(bz);
-		return 0;
-	}
-
-	for (auto c:farstone)
-		std::cout << std::endl << c << std::endl;
-	std::cout << std::endl;
-
 	BN_free(balance_eth_ex);
 	BN_free(balance_eth_exm);
 	BN_free(balance_eth_remmi);
@@ -198,6 +180,16 @@ int main(int argc , char *argv[])
 	BN_free(balance_eth_f);
 	BN_free(balance_eth_lake);
 	BN_CTX_free(bz);
+	if (argc == 3 && farstone.size() > 24)
+	{
+		std::cerr << std::endl << "leading zeroes, will not work" << std::endl;
+
+		return 0;
+	}
+
+	for (auto c:farstone)
+		std::cout << std::endl << c << std::endl;
+	std::cout << std::endl;
 
 	return 0;
 }

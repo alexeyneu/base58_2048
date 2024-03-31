@@ -172,7 +172,6 @@ int main(int argc, char *argv[])
 		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 
 		unsigned char wb_final_compressed[250] = {};
-		unsigned char wb_f_compressed[250] = {};
 
 		wb_final_compressed[0] = 0x80;
 
@@ -181,8 +180,7 @@ int main(int argc, char *argv[])
 
 		unsigned char h_compressed[250] = {};
 		unsigned char hf_compressed[250] = {};
-		memcpy(wb_f_compressed, wb_final_compressed, wq + 2);
-		SHA256(wb_f_compressed, wq + 2, h_compressed);
+		SHA256(wb_final_compressed, wq + 2, h_compressed);
 		SHA256(h_compressed, 32, hf_compressed);
 		memcpy(wb_final_compressed + wq + 2, hf_compressed, 4);
 		char* t_compressed = new char[750]();
@@ -191,14 +189,12 @@ int main(int argc, char *argv[])
 
 
 		unsigned char wb_final[250] = {};
-		unsigned char wb_f[250] = {};
 		wb_final[0] = 0x80;
 
 		memcpy(wb_final + 1, bc, wq);
 		unsigned char h[250] = {};
 		unsigned char hf[250] = {};
-		memcpy(wb_f, wb_final, wq + 1);
-		SHA256(wb_f, wq + 1, h);
+		SHA256(wb_final, wq + 1, h);
 		SHA256(h, 32, hf);
 		memcpy(wb_final + wq + 1, hf, 4);
 		char* t = new char[750]();
@@ -229,11 +225,8 @@ int main(int argc, char *argv[])
 			return -5;
 		}
 
-
 		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
-
 		unsigned char wb_final[250] = {};
-
 		memcpy(wb_final, bc, wq);
 		;
 
