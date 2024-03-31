@@ -55,7 +55,7 @@ std::pair<int, unsigned int> b58_to_2048(std::string a /* in */, std::vector<std
 			BN_free(balance_eth_f);
 			BN_free(balance_eth_lake);
 			BN_CTX_free(bz);
-			bx.empty();
+			bx = std::vector<std::string>();
 			return std::pair<int, unsigned int>(0, 0);
 		}
 		if (b58digits_map[a[k]] == -1)
@@ -67,7 +67,7 @@ std::pair<int, unsigned int> b58_to_2048(std::string a /* in */, std::vector<std
 			BN_free(balance_eth_f);
 			BN_free(balance_eth_lake);
 			BN_CTX_free(bz);
-			bx.empty();
+			bx = std::vector<std::string>();
 			return std::pair<int, unsigned int>(-1, 0);
 		}
 
@@ -145,7 +145,7 @@ std::pair<int, unsigned int> transfer2048_to_b58(std::vector<std::string> bt, st
 			BN_free(balance_eth_f);
 			BN_free(balance_eth_lake);
 			BN_CTX_free(bz);
-			ax.empty();
+			ax = std::string ();;
 			return std::pair<int, unsigned int>(0, 0);
 		}
 
