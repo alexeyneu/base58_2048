@@ -4,7 +4,7 @@ compressor: words delivered from file. file name provided via command line. ther
 dcompressor: base58 encoded thing or hex string provided via command line.  there're `-wif24` and `-hex32_24` options  
 
 msvc 2019 project with cmake build support.  
-in windows you should have libcrypto.dll next to .exe files, not included  
+in windows you should have `libcrypto.dll` next to `.exe` files.    
 wif key is 27 words. 24 words or less with `-wif24` option.  
 `-hex32_24` option is for tranfering private keys in hex
 
