@@ -8,5 +8,5 @@ in windows you should have `libcrypto.dll` next to `.exe` files. included to bin
 wif key is 27 words. 24 words or less with `-wif24` option.  
 `-hex32_24` option is for tranfering private keys in hex
 
-for `bc1q` address you can import stuff from `compressor`. Even if you'd used uncompressed wif in `decompressor`  
+for `bc1q` address( `rc1q` for ravencoin ) you can import stuff from `compressor`. Even if you'd used uncompressed wif in `decompressor`  
 `P2WPKH`
