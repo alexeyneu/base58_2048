@@ -11,4 +11,4 @@ wif key is 27 words. 24 words or less with `-wif24` option.
 for `bc1q` address you can import stuff from `compressor`. Even if you'd used uncompressed wif in `decompressor`  
 `P2WPKH`  
   
-leading zeroes concept is kept despite that the tool can't be applied to private keys with zero bytes at start , it will deny to work in this case so you'll not see phrase at all. Yet new tool can be done from original base58 by just replace of byte range [0..255] to [0..2047] there if soomeone will lose access to this one.
+leading zeroes concept is kept despite that the tool can't be applied to private keys with zero bytes at start , it will deny to work in this case so you'll not see phrase at all. Yet new tool can be done from original base58 by just replace of byte range [0..255] with [0..2047] there if soomeone will lose access to this one.
