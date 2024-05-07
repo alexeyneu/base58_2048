@@ -9,4 +9,6 @@ wif key is 27 words. 24 words or less with `-wif24` option.
 `-hex32_24` option is for tranfering private keys in hex
 
 for `bc1q` address you can import stuff from `compressor`. Even if you'd used uncompressed wif in `decompressor`  
-`P2WPKH`
+`P2WPKH`  
+  
+leading zeroes concept is kept despite that the tool can't be applied to private keys with zero bytes at start , it will deny to work in this case so you'll not see phrase at all.   
