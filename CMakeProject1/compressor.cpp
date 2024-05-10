@@ -30,13 +30,6 @@ size_t hex2bin(unsigned char* p, const char* hexstr, const size_t length) {
 	return  --wcount;     // error check here is a waste  
 }
 
-
-
-struct offstring
-{
-	static const std::vector<std::string> disclaimer;
-};
-
 int main(int argc, char *argv[])
 {
 	
@@ -75,7 +68,6 @@ int main(int argc, char *argv[])
 
 
 	std::string harbour;
-
 	std::pair<int, unsigned int> f = transfer2048_to_b58(b, harbour);
 	if (f.first == 0) 
 	{
