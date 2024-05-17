@@ -10,7 +10,7 @@
 #include <cstring>
 #include <sstream>
 #include <iomanip>
-#include "libbase58.h"
+#include <base58.hpp>
 #include <iostream>
 
 
@@ -85,22 +85,20 @@ int main(int argc, char *argv[])
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
 		}
-		unsigned char bc[750] = {};
-		size_t wq = 750;
-		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+
+		auto c = b58decode(harbour);
+		size_t wq = c.second.size();
 		if ( wq == 32 == false)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
 		}
 
-		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
-
 		unsigned char wb_final_compressed[250] = {};
 
 		wb_final_compressed[0] = 0x80;
 
-		memcpy(wb_final_compressed + 1, bc, wq);
+		memcpy(wb_final_compressed + 1, &c.second[0], wq);
 		wb_final_compressed[wq + 1] = 0x01;
 
 		unsigned char h_compressed[250] = {};
@@ -108,31 +106,24 @@ int main(int argc, char *argv[])
 		SHA256(wb_final_compressed, wq + 2, h_compressed);
 		SHA256(h_compressed, 32, hf_compressed);
 		memcpy(wb_final_compressed + wq + 2, hf_compressed, 4);
-		char* t_compressed = new char[750]();
-		size_t cw_copmressed = 750;
-		b58enc(t_compressed, &cw_copmressed, (void*)wb_final_compressed, (size_t)(38));
 
-
+		auto t_compressed = b58encode(std::string((char *)wb_final_compressed, 38));
 		unsigned char wb_final[250] = {};
 		wb_final[0] = 0x80;
 
-		memcpy(wb_final + 1, bc, wq);
+		memcpy(wb_final + 1, c.second.c_str(), wq);
 		unsigned char h[250] = {};
 		unsigned char hf[250] = {};
 		SHA256(wb_final, wq + 1, h);
 		SHA256(h, 32, hf);
 		memcpy(wb_final + wq + 1, hf, 4);
-		char* t = new char[750]();
-		size_t cw = 750;
-		b58enc(t, &cw, (void*)wb_final, (size_t)(1 + 32 + 4));
 
-		std::string whydah = t;
+		auto t = b58encode(std::string((char *)wb_final, 1 + 32 + 4));
+		std::string whydah = t.second;
 		std::cout << std::endl << whydah << std::endl;
-		std::string mill = t_compressed;
+		std::string mill = t_compressed.second;
 		std::cout << std::endl << mill << std::endl;
 
-		delete[] t_compressed;
-		delete[] t;
 	}
 	if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
 	{
@@ -141,19 +132,17 @@ int main(int argc, char *argv[])
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
 		}
-		unsigned char bc[850] = {};
-		size_t wq = 850;
-		bool ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
+
+		auto c = b58decode(harbour);
+		size_t wq = c.second.size();
 		if (wq == 32 == false)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
 		}
 
-		ho = b58tobin((void*)bc, &wq, harbour.c_str(), harbour.length());
 		unsigned char wb_final[250] = {};
-		memcpy(wb_final, bc, wq);
-		;
+		memcpy(wb_final, &c.second[0], wq);
 
 		std::string draw = bin2hex(wb_final, 32);
 		std::cout << std::endl << draw << std::endl;
