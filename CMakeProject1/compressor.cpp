@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 		unsigned char hf[250] = {};
 		SHA256((unsigned char *)&wb_final[0], wb_final.size(), h);
 		SHA256(h, 32, hf);
-		wb_final_compressed.insert(wb_final.size(), std::string((char *)hf, 4));
+		wb_final.insert(wb_final.size(), std::string((char *)hf, 4));
 
 		auto t = b58encode(wb_final);
 		std::string whydah = t.second;
