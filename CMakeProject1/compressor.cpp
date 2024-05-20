@@ -87,38 +87,38 @@ int main(int argc, char *argv[])
 		}
 
 		auto c = b58decode(harbour);
-		size_t wq = c.second.size();
-		if ( wq == 32 == false)
+		if (  c.second.size() == 32 == false)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
 		}
 
-		unsigned char wb_final_compressed[250] = {};
+		std::string wb_final_compressed;
 
-		wb_final_compressed[0] = 0x80;
-
-		memcpy(wb_final_compressed + 1, &c.second[0], wq);
-		wb_final_compressed[wq + 1] = 0x01;
+		wb_final_compressed.insert(wb_final_compressed.cbegin(), (char)0x80);
+		wb_final_compressed.insert(1, c.second);
+		wb_final_compressed.insert(wb_final_compressed.cend(), (char)0x01);
 
 		unsigned char h_compressed[250] = {};
 		unsigned char hf_compressed[250] = {};
-		SHA256(wb_final_compressed, wq + 2, h_compressed);
+		SHA256((unsigned char *)&wb_final_compressed[0], wb_final_compressed.size(), h_compressed);
 		SHA256(h_compressed, 32, hf_compressed);
-		memcpy(wb_final_compressed + wq + 2, hf_compressed, 4);
 
-		auto t_compressed = b58encode(std::string((char *)wb_final_compressed, 38));
-		unsigned char wb_final[250] = {};
-		wb_final[0] = 0x80;
+		wb_final_compressed.insert(wb_final_compressed.size(), std::string((char *)hf_compressed, 4));
 
-		memcpy(wb_final + 1, c.second.c_str(), wq);
+		auto t_compressed = b58encode(wb_final_compressed);
+
+		std::string wb_final;
+		wb_final.insert(wb_final.cbegin(), (char)0x80);
+		wb_final.insert(1, c.second);
+
 		unsigned char h[250] = {};
 		unsigned char hf[250] = {};
-		SHA256(wb_final, wq + 1, h);
+		SHA256((unsigned char *)&wb_final[0], wb_final.size(), h);
 		SHA256(h, 32, hf);
-		memcpy(wb_final + wq + 1, hf, 4);
+		wb_final_compressed.insert(wb_final.size(), std::string((char *)hf, 4));
 
-		auto t = b58encode(std::string((char *)wb_final, 1 + 32 + 4));
+		auto t = b58encode(wb_final);
 		std::string whydah = t.second;
 		std::cout << std::endl << whydah << std::endl;
 		std::string mill = t_compressed.second;

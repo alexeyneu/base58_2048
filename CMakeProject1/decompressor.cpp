@@ -53,7 +53,7 @@ int main(int argc , char *argv[])
 	std::string a = argc == 3 ? argv[2] : argv[1];
 	if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
 	{
-		unsigned char bc[32] = {};
+		unsigned char bc[250] = {};
 
 		size_t zx = hex2bin(bc, a.c_str(), 32);
 
@@ -63,25 +63,20 @@ int main(int argc , char *argv[])
 			return -15;
 		}
 
-		unsigned char wb_final[250] = {};
-		memcpy(wb_final, bc, 32);
-		auto t = b58encode(std::string((char *)wb_final, 32 ));
+		auto t = b58encode(std::string((char *)bc, 32 ));
 		a = t.second;
 	}
 
 	if ((argc == 2 == false) && std::string(argv[1]) == "-wif24")
 	{
 		auto c = b58decode(a);
-		size_t wq = c.second.size();
-		if (wq == 37 == false && wq == 38 == false)
+		if (c.second.size() == 37 == false && c.second.size() == 38 == false)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
 		}
-		unsigned char wb_final[250] = {};
-		memcpy(wb_final, &c.second[0] + 1, 32);
 
-		auto t = b58encode(std::string((char *)wb_final, 32 ));
+		auto t = b58encode(std::string(&c.second[0] + 1, 32 ));
 		a = t.second;
 	}
 
