@@ -88,7 +88,7 @@ std::pair<int, unsigned int> b58_to_2048(std::string a /* in */, std::vector<std
 	{
 		BN_div(balance_eth_ex, balance_eth_remmi, balance_eth_ex, balance_eth_lake, bz);
 		BN_bn2lebinpad(balance_eth_remmi, (unsigned char*)&t, 2);
-		farstone.insert(farstone.cbegin(), offstring::disclaimer[t]);
+		farstone.insert(farstone.cbegin()  /* LE  */ , offstring::disclaimer[t]);
 		w = BN_is_zero(balance_eth_ex);
 	}
 
