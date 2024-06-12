@@ -169,7 +169,7 @@ std::pair<int, unsigned int> transfer2048_to_b58(std::vector<std::string> bt, st
 
 		w = BN_is_zero(balance_eth_ex_e);
 	}
-	std::reverse((unsigned char*)&harbour[0], (unsigned char*)&harbour[0] + harbour.size());
+	std::reverse((unsigned char*)&harbour[0], (unsigned char*)&harbour[0] + harbour.size());        // LE machine
 
 	for (int h = 0; h < zerocount; h++)
 		harbour.insert(harbour.cbegin(), '1');
