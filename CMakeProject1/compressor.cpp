@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
 
 		unsigned char h_compressed[250] = {};
 		unsigned char hf_compressed[250] = {};
-		SHA256((unsigned char *)&wb_final_compressed[0], wb_final_compressed.size(), h_compressed);
+		SHA256((unsigned char *)wb_final_compressed.c_str(), wb_final_compressed.size(), h_compressed);
 		SHA256(h_compressed, 32, hf_compressed);
 
 		wb_final_compressed.insert(wb_final_compressed.size(), std::string((char *)hf_compressed, 4));
@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 
 		unsigned char h[250] = {};
 		unsigned char hf[250] = {};
-		SHA256((unsigned char *)&wb_final[0], wb_final.size(), h);
+		SHA256((unsigned char *)wb_final.c_str(), wb_final.size(), h);
 		SHA256(h, 32, hf);
 		wb_final.insert(wb_final.size(), std::string((char *)hf, 4));
 
@@ -134,17 +134,13 @@ int main(int argc, char *argv[])
 		}
 
 		auto c = b58decode(harbour);
-		size_t wq = c.second.size();
-		if (wq == 32 == false)
+		if (c.second.size() == 32 == false)
 		{
 			std::cerr << std::endl << "do not mess with it" << std::endl;
 			return -5;
 		}
 
-		unsigned char wb_final[250] = {};
-		memcpy(wb_final, &c.second[0], wq);
-
-		std::string draw = bin2hex(wb_final, 32);
+		std::string draw = bin2hex((unsigned char *)c.second.c_str(), 32);
 		std::cout << std::endl << draw << std::endl;
 
 	}
