@@ -354,7 +354,6 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 
 }
 
-HWND erg;
 unsigned long long c;
 LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (nCode == HC_ACTION) {
@@ -414,12 +413,11 @@ VOID hammer(VOID *)
 			UnhookWindowsHookEx(hter);
 }
 
-
+bool fwef;
 void CMainFrame::w()			   // q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE|WS_DISABLED,CRect(50+170,50,170+170,100),this,233);
 {		
-
-	erg = this->m_hWnd;
-	OPENSSL_init_crypto(OPENSSL_INIT_ENGINE_ALL_BUILTIN, NULL);
+	if (fwef == false)
+		OPENSSL_init_crypto(OPENSSL_INIT_ENGINE_ALL_BUILTIN, NULL), fwef = !false;
 	RAND_set_rand_engine(NULL);
 	if (c == false) 
 		hter = SetWindowsHookExW(WH_MOUSE_LL, LowLevel, afxCurrentInstanceHandle, 0);
