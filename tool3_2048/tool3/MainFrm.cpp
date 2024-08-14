@@ -18,6 +18,8 @@
 #include <sstream>
 #include <iomanip>
 #include <base58.hpp>
+#include <openssl/rand.h>
+#include <openssl/conf.h>
 
 
 const	std::string bin2hex(const unsigned char* p, size_t length) {
@@ -75,6 +77,8 @@ CButton *tx;
 CButton *hux;
 CButton *tux;
 CStatic *b7;
+CProgressCtrl *dc;
+HANDLE cl;
 
 DWORD CALLBACK E(DWORD_PTR dw, LPBYTE pb, LONG cb, LONG *pcb)
 {
@@ -89,6 +93,8 @@ std::map< state , std::wstring> braze;
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	
+	dc= new CProgressCtrl();
+	cl=CreateEvent(NULL,1,0,NULL);
 
 	if (CWnd::OnCreate(lpCreateStruct) == -1)
 		return -1;
@@ -117,13 +123,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE,CRect(50,50,170,100),this,2133);
 	bh->SetBitmap(wq[0]);
-	q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE|WS_DISABLED,CRect(50+170,50,170+170,100),this,233);
+	q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE,CRect(50+170,50,170+170,100),this,233);
 	q->SetBitmap(wq[1]);
 	sx->Create(L"compressor",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE|WS_GROUP,CRect(0+10,20+292,98+10,48+292),this,73);
 	tx->Create(L"decompressor",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(0+111,20+292,118+111,48+292),this,173);
 	hux->Create(L"-hex32_24",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE|WS_GROUP,CRect(0+240,20+292,95+240,48+292),this,7987);
 	tux->Create(L"-wif24",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(0+337,20+292,97+341,48+292),this,543);
 	b7->Create(L"",WS_CHILD|WS_VISIBLE|SS_WHITEFRAME|SS_SIMPLE,CRect(40,240,423,270),this);
+	dc->Create(WS_VISIBLE|WS_CHILD|PBS_SMOOTH,CRect(120,100+130,120+220,100+170),this,21);
+	dc->SetState(PBST_NORMAL);
 
 
 	 hc = CreateWindowEx(WS_EX_NOPARENTNOTIFY, MSFTEDIT_CLASS,L"",
@@ -346,9 +354,82 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 
 }
 
-void CMainFrame::w()			   // q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE|WS_DISABLED,CRect(50+170,50,170+170,100),this,233);
-{
+HWND erg;
+unsigned long long c;
+LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
+	if (nCode == HC_ACTION) {
+		const int b[2] = { wParam, lParam };
+		RAND_add(b, 8, 8 * 0.25);
+		c++;
+		dc->SetPos(int(100 * c/9000.0));
 
+	}
+	if (c == 9000)
+	{
+		c = 0;
+		SetEvent(cl);
+	}
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+HHOOK hter;
+VOID hammer(VOID *)
+{	
+			WaitForSingleObject(cl,INFINITE);
+			std::pair<int, std::string> c{0, std::string(32,' ')};
+			RAND_bytes((unsigned char*)&c.second[0], 32);
+
+			std::string wb_final_compressed;
+
+			wb_final_compressed.insert(wb_final_compressed.cbegin(), (char)0x80);
+			wb_final_compressed.insert(1, c.second);
+			wb_final_compressed.insert(wb_final_compressed.cend(), (char)0x01);
+
+			unsigned char h_compressed[250] = {};
+			unsigned char hf_compressed[250] = {};
+			SHA256((unsigned char*)wb_final_compressed.c_str(), wb_final_compressed.size(), h_compressed);
+			SHA256(h_compressed, 32, hf_compressed);
+
+			wb_final_compressed.insert(wb_final_compressed.size(), std::string((char*)hf_compressed, 4));
+
+			auto t_compressed = b58encode(wb_final_compressed);
+
+			std::string wb_final;
+			wb_final.insert(wb_final.cbegin(), (char)0x80);
+			wb_final.insert(1, c.second);
+
+			unsigned char h[250] = {};
+			unsigned char hf[250] = {};
+			SHA256((unsigned char*)wb_final.c_str(), wb_final.size(), h);
+			SHA256(h, 32, hf);
+			wb_final.insert(wb_final.size(), std::string((char*)hf, 4));
+
+			auto t = b58encode(wb_final);
+			std::string whydah = t.second;
+			std::string mill = whydah + '\n' + t_compressed.second;
+			wchar_t cb[1218] = {};
+			mbstowcs(cb, mill.c_str(), 747);
+			SETTEXTEX fw = { 4, 1200 };
+			::SendMessage(hc, EM_SETTEXTEX, (WPARAM)&fw, (LPARAM)(LPCWSTR)cb);
+			UnhookWindowsHookEx(hter);
+}
+
+
+void CMainFrame::w()			   // q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE|WS_DISABLED,CRect(50+170,50,170+170,100),this,233);
+{		
+
+	erg = this->m_hWnd;
+	OPENSSL_init_crypto(OPENSSL_INIT_ENGINE_ALL_BUILTIN, NULL);
+	RAND_set_rand_engine(NULL);
+	if (c == false) 
+		hter = SetWindowsHookExW(WH_MOUSE_LL, LowLevel, afxCurrentInstanceHandle, 0);
+	else
+	{
+	}
+	CWinThread *rewh = AfxBeginThread((AFX_THREADPROC)hammer,NULL);	
+
+
+	return;
 }
 
 
