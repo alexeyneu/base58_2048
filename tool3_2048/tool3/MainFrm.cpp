@@ -411,6 +411,7 @@ VOID hammer(VOID *)
 			SETTEXTEX fw = { 4, 1200 };
 			::SendMessage(hc, EM_SETTEXTEX, (WPARAM)&fw, (LPARAM)(LPCWSTR)cb);
 			UnhookWindowsHookEx(hter);
+			::c = 0;
 }
 
 bool fwef;
@@ -424,6 +425,7 @@ void CMainFrame::w()			   // q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE|WS_
 	else
 	{
 	}
+	ResetEvent(cl);
 	CWinThread *rewh = AfxBeginThread((AFX_THREADPROC)hammer,NULL);	
 
 
