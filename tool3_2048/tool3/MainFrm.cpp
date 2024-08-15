@@ -357,8 +357,7 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 unsigned long long c;
 LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (nCode == HC_ACTION) {
-		const int b[2] = { wParam, lParam };
-		RAND_add(b, 8, 8 * 0.25);
+		RAND_add((BYTE *)lParam, 8, 8 * 0.15);
 		c++;
 		dc->SetPos(int(100 * c/9000.0));
 
