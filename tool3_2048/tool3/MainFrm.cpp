@@ -355,10 +355,18 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 }
 
 unsigned long long c;
+BYTE fwec[16];
+
 LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (nCode == HC_ACTION) {
-		const int b[2] = { wParam, lParam };
-		RAND_add(b, 8, 8 * 0.25);
+
+		memcpy(fwec, fwec + 4, 4);
+		memcpy(fwec + 4, fwec + 8, 4);
+		memcpy(fwec + 8, fwec + 8 + 4, 4);
+		memcpy(fwec + 4 + 8, (BYTE *)lParam, 2);
+		memcpy(fwec + 4 + 8 + 2, (BYTE *)lParam + 4, 2);
+
+		RAND_add(fwec + 4 + 8, 4, 1.7);
 		c++;
 		dc->SetPos(int(100 * c/9000.0));
 
@@ -406,10 +414,22 @@ VOID hammer(VOID *)
 			auto t = b58encode(wb_final);
 			std::string whydah = t.second;
 			std::string mill = whydah + '\n' + t_compressed.second;
+
+
+			std::string draw = bin2hex(fwec, 16);
+			BYTE wea[32];
+			memcpy(wea, draw.c_str(), 32);
+
 			wchar_t cb[1218] = {};
 			mbstowcs(cb, mill.c_str(), 747);
 			SETTEXTEX fw = { 4, 1200 };
 			::SendMessage(hc, EM_SETTEXTEX, (WPARAM)&fw, (LPARAM)(LPCWSTR)cb);
+
+			ZeroMemory(cb, 2 * 1218);
+			mbstowcs(cb, ( char*)wea, 747);
+
+			b7->SetWindowTextW(cb);
+
 			UnhookWindowsHookEx(hter);
 			::c = 0;
 }
