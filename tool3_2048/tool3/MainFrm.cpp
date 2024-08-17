@@ -18,6 +18,7 @@
 #include <sstream>
 #include <iomanip>
 #include <base58.hpp>
+#include <mmsystem.h>
 #include <openssl/rand.h>
 #include <openssl/conf.h>
 
@@ -67,6 +68,8 @@ CMainFrame::CMainFrame()
 CMainFrame::~CMainFrame()
 {
 }
+
+VOID hammer(VOID*);
 
 // CMainFrame message handler
 HWND hc;
@@ -141,7 +144,8 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	HFONT newFont = CreateFont(22, 0, 0, 0,0 , FALSE, FALSE, FALSE, DEFAULT_CHARSET,
     OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_NATURAL_QUALITY,
     DEFAULT_PITCH | FF_DECORATIVE, L"Lucida Console");
-	
+	CWinThread *rewh = AfxBeginThread((AFX_THREADPROC)hammer,NULL);	
+
 	::PostMessage(b7->m_hWnd, WM_SETFONT, (WPARAM)newFont, (LPARAM)0);
 	::PostMessage(hc,WM_SETFONT,(WPARAM)newFont,(LPARAM)0);
 	return 0;
@@ -380,58 +384,88 @@ LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 }
 
 HHOOK hter;
-VOID hammer(VOID *)
-{	
-			WaitForSingleObject(cl,INFINITE);
-			std::pair<int, std::string> c{0, std::string(32,' ')};
-			RAND_bytes((unsigned char*)&c.second[0], 32);
+VOID hammer(VOID*)
+{
+	while (false == false)
+	{
+		WaitForSingleObject(cl, INFINITE);
+	std::pair<int, std::string> c{ 0, std::string(32,' ') };
+	RAND_bytes((unsigned char*)&c.second[0], 32);
 
-			std::string wb_final_compressed;
+	std::string wb_final_compressed;
 
-			wb_final_compressed.insert(wb_final_compressed.cbegin(), (char)0x80);
-			wb_final_compressed.insert(1, c.second);
-			wb_final_compressed.insert(wb_final_compressed.cend(), (char)0x01);
+	wb_final_compressed.insert(wb_final_compressed.cbegin(), (char)0x80);
+	wb_final_compressed.insert(1, c.second);
+	wb_final_compressed.insert(wb_final_compressed.cend(), (char)0x01);
 
-			unsigned char h_compressed[250] = {};
-			unsigned char hf_compressed[250] = {};
-			SHA256((unsigned char*)wb_final_compressed.c_str(), wb_final_compressed.size(), h_compressed);
-			SHA256(h_compressed, 32, hf_compressed);
+	unsigned char h_compressed[250] = {};
+	unsigned char hf_compressed[250] = {};
+	SHA256((unsigned char*)wb_final_compressed.c_str(), wb_final_compressed.size(), h_compressed);
+	SHA256(h_compressed, 32, hf_compressed);
 
-			wb_final_compressed.insert(wb_final_compressed.size(), std::string((char*)hf_compressed, 4));
+	wb_final_compressed.insert(wb_final_compressed.size(), std::string((char*)hf_compressed, 4));
 
-			auto t_compressed = b58encode(wb_final_compressed);
+	auto t_compressed = b58encode(wb_final_compressed);
 
-			std::string wb_final;
-			wb_final.insert(wb_final.cbegin(), (char)0x80);
-			wb_final.insert(1, c.second);
+	std::string wb_final;
+	wb_final.insert(wb_final.cbegin(), (char)0x80);
+	wb_final.insert(1, c.second);
 
-			unsigned char h[250] = {};
-			unsigned char hf[250] = {};
-			SHA256((unsigned char*)wb_final.c_str(), wb_final.size(), h);
-			SHA256(h, 32, hf);
-			wb_final.insert(wb_final.size(), std::string((char*)hf, 4));
+	unsigned char h[250] = {};
+	unsigned char hf[250] = {};
+	SHA256((unsigned char*)wb_final.c_str(), wb_final.size(), h);
+	SHA256(h, 32, hf);
+	wb_final.insert(wb_final.size(), std::string((char*)hf, 4));
 
-			auto t = b58encode(wb_final);
-			std::string whydah = t.second;
-			std::string mill = whydah + '\n' + t_compressed.second;
+	auto t = b58encode(wb_final);
+	std::string whydah = t.second;
+	std::string mill = whydah + '\n' + t_compressed.second;
 
 
-			std::string draw = bin2hex(fwec, 16);
-			BYTE wea[32];
-			memcpy(wea, draw.c_str(), 32);
+	std::string draw = bin2hex(fwec, 16);
+	BYTE wea[32];
+	memcpy(wea, draw.c_str(), 32);
 
-			wchar_t cb[1218] = {};
-			mbstowcs(cb, mill.c_str(), 747);
-			SETTEXTEX fw = { 4, 1200 };
-			::SendMessage(hc, EM_SETTEXTEX, (WPARAM)&fw, (LPARAM)(LPCWSTR)cb);
+	wchar_t cb[1218] = {};
+	mbstowcs(cb, mill.c_str(), 747);
+	SETTEXTEX fw = { 4, 1200 };
+	::SendMessage(hc, EM_SETTEXTEX, (WPARAM)&fw, (LPARAM)(LPCWSTR)cb);
 
-			ZeroMemory(cb, 2 * 1218);
-			mbstowcs(cb, ( char*)wea, 747);
+	ZeroMemory(cb, 2 * 1218);
+	mbstowcs(cb, (char*)wea, 747);
 
-			b7->SetWindowTextW(cb);
+	b7->SetWindowTextW(cb);
 
-			UnhookWindowsHookEx(hter);
-			::c = 0;
+	UnhookWindowsHookEx(hter);
+	::c = 0;
+	HWAVEOUT hWaveOut = 0;
+	WAVEFORMATEX f;
+	f.wFormatTag = WAVE_FORMAT_PCM;      // simple, uncompressed format
+	f.wBitsPerSample = 16;                //  16 for high quality, 8 for telephone-grade
+	f.nChannels = 2;                     //  1=mono, 2=stereo
+	f.nSamplesPerSec = 44100;       //  
+	f.nAvgBytesPerSec = f.nSamplesPerSec * f.nChannels * f.wBitsPerSample / 8;
+	f.nBlockAlign = f.nChannels * f.wBitsPerSample / 8;
+	f.cbSize = 0;
+	waveOutOpen(&hWaveOut, WAVE_MAPPER, &f, 0, 0, CALLBACK_NULL);
+	int lkm = 44100 * 2 * 13.8;
+	char* b = new char[lkm]();
+
+	std::ifstream cd;
+	cd.open(L"f.raw", std::ios_base::binary);
+
+	cd.read(b, lkm);
+
+	WAVEHDR haze = { b, lkm, 0, 0, 0, 0, 0, 0 };
+	waveOutPrepareHeader(hWaveOut, &haze, sizeof(WAVEHDR));
+	waveOutWrite(hWaveOut, &haze, sizeof(WAVEHDR));
+
+
+	waveOutUnprepareHeader(hWaveOut, &haze, sizeof(WAVEHDR));
+	waveOutClose(hWaveOut);
+	ResetEvent(cl);
+	
+}
 }
 
 bool fwef;
@@ -445,8 +479,6 @@ void CMainFrame::w()			   // q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE|WS_
 	else
 	{
 	}
-	ResetEvent(cl);
-	CWinThread *rewh = AfxBeginThread((AFX_THREADPROC)hammer,NULL);	
 
 
 	return;
