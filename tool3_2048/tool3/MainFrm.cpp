@@ -371,6 +371,9 @@ LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 		memcpy(fwec + 4 + 8 + 2, (BYTE *)lParam + 4, 2);
 
 		RAND_add(fwec + 4 + 8, 4, 1.7);
+		
+		if(c == 0) b7->ShowWindow(SW_HIDE);
+
 		c++;
 		dc->SetPos(int(100 * c/9000.0));
 
@@ -441,14 +444,14 @@ VOID hammer(VOID*)
 	HWAVEOUT hWaveOut = 0;
 	WAVEFORMATEX f;
 	f.wFormatTag = WAVE_FORMAT_PCM;      // simple, uncompressed format
-	f.wBitsPerSample = 16;                //  16 for high quality, 8 for telephone-grade
+	f.wBitsPerSample = 32;                //  16 for high quality, 8 for telephone-grade
 	f.nChannels = 2;                     //  1=mono, 2=stereo
 	f.nSamplesPerSec = 44100;       //  
 	f.nAvgBytesPerSec = f.nSamplesPerSec * f.nChannels * f.wBitsPerSample / 8;
 	f.nBlockAlign = f.nChannels * f.wBitsPerSample / 8;
 	f.cbSize = 0;
 	waveOutOpen(&hWaveOut, WAVE_MAPPER, &f, 0, 0, CALLBACK_NULL);
-	int lkm = 44100 * 2 * 13.8;
+	int lkm = 44100 * 4 * 13.8;
 	char* b = new char[lkm]();
 
 	std::ifstream cd;
