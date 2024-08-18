@@ -394,6 +394,7 @@ VOID hammer(VOID*)
 		WaitForSingleObject(cl, INFINITE);
 	std::pair<int, std::string> c{ 0, std::string(32,' ') };
 	RAND_bytes((unsigned char*)&c.second[0], 32);
+		b7->ShowWindow(SW_SHOW);
 
 	std::string wb_final_compressed;
 
