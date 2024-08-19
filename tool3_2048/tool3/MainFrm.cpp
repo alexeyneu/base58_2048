@@ -95,7 +95,6 @@ std::map< state , std::wstring> braze;
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	
 	dc= new CProgressCtrl();
 	cl=CreateEvent(NULL,1,0,NULL);
 
@@ -158,7 +157,7 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 {   
 	std::wstringstream fr;
 	int argc = 2;
-	char* argv[2];
+	std::string argv[2];
 
 	EDITSTREAM es = {};
 	if(trigger)
@@ -364,9 +363,7 @@ BYTE fwec[16];
 LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 	if (nCode == HC_ACTION) {
 
-		memcpy(fwec, fwec + 4, 4);
-		memcpy(fwec + 4, fwec + 8, 4);
-		memcpy(fwec + 8, fwec + 8 + 4, 4);
+		std::copy(fwec + 4, fwec + 16, fwec);
 		memcpy(fwec + 4 + 8, (BYTE *)lParam, 2);
 		memcpy(fwec + 4 + 8 + 2, (BYTE *)lParam + 4, 2);
 
@@ -388,7 +385,12 @@ LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 
 HHOOK hter;
 VOID hammer(VOID*)
-{
+{	
+
+static const int lkm = 44100 * 4 * 13.8;
+std::shared_ptr<BYTE[]> b(new BYTE[lkm]);
+	std::weak_ptr<BYTE[]> br(b);
+
 	while (false == false)
 	{
 		WaitForSingleObject(cl, INFINITE);
@@ -451,16 +453,13 @@ VOID hammer(VOID*)
 	f.nAvgBytesPerSec = f.nSamplesPerSec * f.nChannels * f.wBitsPerSample / 8;
 	f.nBlockAlign = f.nChannels * f.wBitsPerSample / 8;
 	f.cbSize = 0;
-	waveOutOpen(&hWaveOut, WAVE_MAPPER, &f, 0, 0, CALLBACK_NULL);
-	int lkm = 44100 * 4 * 13.8;
-	char* b = new char[lkm]();
+	waveOutOpen(&hWaveOut, WAVE_MAPPER, &f, 0, 0, NULL);
 
 	std::ifstream cd;
 	cd.open(L"f.raw", std::ios_base::binary);
+	cd.read(&b[0], lkm);
 
-	cd.read(b, lkm);
-
-	WAVEHDR haze = { b, lkm, 0, 0, 0, 0, 0, 0 };
+	WAVEHDR haze = {&b[0] , lkm };
 	waveOutPrepareHeader(hWaveOut, &haze, sizeof(WAVEHDR));
 	waveOutWrite(hWaveOut, &haze, sizeof(WAVEHDR));
 
