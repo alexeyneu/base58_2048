@@ -457,9 +457,9 @@ std::shared_ptr<BYTE[]> b(new BYTE[lkm]);
 
 	std::ifstream cd;
 	cd.open(L"f.raw", std::ios_base::binary);
-	cd.read(&b[0], lkm);
+	cd.read((char *)&b[0], lkm);
 
-	WAVEHDR haze = {&b[0] , lkm };
+	WAVEHDR haze = {(char *)&b[0] , lkm };
 	waveOutPrepareHeader(hWaveOut, &haze, sizeof(WAVEHDR));
 	waveOutWrite(hWaveOut, &haze, sizeof(WAVEHDR));
 
