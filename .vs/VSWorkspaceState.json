@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\CMakeProject1",
+    "\\tool3_2048",
+    "\\tool3_2048\\tool3"
   ],
-  "SelectedNode": "\\Untitled 3.jpg",
+  "SelectedNode": "\\CMakeProject1\\decompressor.cpp",
   "PreviewInSolutionExplorer": false
 }

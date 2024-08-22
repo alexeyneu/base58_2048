@@ -1,6 +1,7 @@
 ﻿
 
 #include "base58_2048.h"
+#include <sodium.h>
 #include <openssl/sha.h>
 #include <openssl/bn.h>
 #include <vector>
@@ -12,6 +13,7 @@
 #include <iomanip>
 #include <base58.hpp>
 #include <iostream>
+
 
 
 const	std::string bin2hex(const unsigned char* p, size_t length) {
@@ -43,7 +45,7 @@ int main(int argc, char *argv[])
 		std::cerr << std::endl << "where's the" << std::endl;
 		return 0;
 	}
-	if (argc == 3 && ((std::string(argv[1]) == "-wif24" == false) && (std::string(argv[1]) == "-hex32_24" == false)))
+	if (argc == 3 && ((std::string(argv[1]) == "-wif24" == false) && (std::string(argv[1]) == "-hex32_24" == false)) && std::string(argv[1]) == "-secretkey" == false)
 	{
 		std::cerr << std::endl << "no go" << std::endl;
 		return 0;
@@ -142,6 +144,32 @@ int main(int argc, char *argv[])
 
 		std::string draw = bin2hex((unsigned char *)c.second.c_str(), 32);
 		std::cout << std::endl << draw << std::endl;
+
+	}
+	if ((argc == 2 == false) && std::string(argv[1]) == "-secretkey")
+	{
+		if (b.size() > 24)
+		{
+			std::cerr << std::endl << "do not mess with it" << std::endl;
+			return -5;
+
+		}
+
+		auto c = b58decode(harbour);
+		if (c.second.size() == 32 == false)
+		{
+			std::cerr << std::endl << "do not mess with it" << std::endl;
+
+			return -1;
+
+		}
+
+		unsigned char bc[32];
+		unsigned char f[64];
+
+		crypto_sign_seed_keypair(bc, f, (unsigned char*)c.second.c_str());
+		auto t = b58encode(std::string((char*)f, 64));
+		std::cout << std::endl << t.second << std::endl;
 
 	}
 	return 0;

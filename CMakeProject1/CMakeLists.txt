@@ -10,8 +10,8 @@ include_directories("${PROJECT_SOURCE_DIR}/New Folder/include")
 
 
 target_link_directories(decompressor PUBLIC "${PROJECT_SOURCE_DIR}/New Folder")
-target_link_libraries(decompressor libcrypto)
+target_link_libraries(decompressor libcrypto libsodium)
 
 target_link_directories(compressor PUBLIC "${PROJECT_SOURCE_DIR}/New Folder")
-target_link_libraries(compressor libcrypto)
+target_link_libraries(compressor libcrypto libsodium)
 # TODO: Add tests and install targets if needed.

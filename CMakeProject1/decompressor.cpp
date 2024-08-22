@@ -1,5 +1,6 @@
 ﻿
 #include "base58_2048.h"
+#include <sodium.h>
 #include <openssl/bn.h>
 #include <vector>
 #include <string>
@@ -44,7 +45,7 @@ int main(int argc , char *argv[])
 		std::cerr << std::endl << "where's the string" << std::endl;
 		return 0;
 	}
-	if (argc == 3 && ((std::string(argv[1]) == "-wif24" == false) && (std::string(argv[1]) == "-hex32_24" == false)))
+	if (argc == 3 && ((std::string(argv[1]) == "-wif24" == false) && (std::string(argv[1]) == "-hex32_24" == false))&& std::string(argv[1]) == "-secretkey" == false)
 	{
 		std::cerr << std::endl << "no go" << std::endl;
 		return 0;
@@ -77,6 +78,21 @@ int main(int argc , char *argv[])
 		}
 
 		auto t = b58encode(std::string(&c.second[0] + 1, 32 ));
+		a = t.second;
+	}
+	if ((argc == 2 == false) && std::string(argv[1]) == "-secretkey")
+	{
+		auto c = b58decode(a);
+		unsigned short rev = c.second.size();
+		if (rev == 64 == false)
+		{
+		std::cerr << std::endl << "do not mess with it" << std::endl;
+		return -5;
+
+
+		}
+
+		auto t = b58encode(std::string(c.second.c_str(), 32 ));
 		a = t.second;
 	}
 
