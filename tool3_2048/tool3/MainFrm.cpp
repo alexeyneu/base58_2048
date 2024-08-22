@@ -19,6 +19,7 @@
 #include <iomanip>
 #include <base58.hpp>
 #include <mmsystem.h>
+#include <sodium.h>
 #include <openssl/rand.h>
 #include <openssl/conf.h>
 
@@ -79,6 +80,7 @@ CButton *sx;
 CButton *tx;
 CButton *hux;
 CButton *tux;
+CButton *edw;
 CStatic *b7;
 CProgressCtrl *dc;
 HANDLE cl;
@@ -108,6 +110,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	tx = new CButton();
 	hux = new CButton();
 	tux = new CButton();
+	edw = new CButton();
 
 	CBitmap wq[2];
 
@@ -127,10 +130,11 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	bh->SetBitmap(wq[0]);
 	q->Create(L"stop",BS_BITMAP|WS_CHILD|WS_VISIBLE,CRect(50+170,50,170+170,100),this,233);
 	q->SetBitmap(wq[1]);
-	sx->Create(L"compressor",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE|WS_GROUP,CRect(0+10,20+292,98+10,48+292),this,73);
-	tx->Create(L"decompressor",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(0+111,20+292,118+111,48+292),this,173);
-	hux->Create(L"-hex32_24",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE|WS_GROUP,CRect(0+240,20+292,95+240,48+292),this,7987);
-	tux->Create(L"-wif24",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(0+337,20+292,97+341,48+292),this,543);
+	sx->Create(L"compressor",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE|WS_GROUP,CRect(0+1,20+292,98+1,48+292),this,73);
+	tx->Create(L"decompressor",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(0+100,20+292,118+100,48+292),this,173);
+	hux->Create(L"hex32",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE|WS_GROUP,CRect(0+224,20+292,59+225,48+292),this,7987);
+	tux->Create(L"wif",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(0+285,20+292,45+281,48+292),this,543);
+	edw->Create(L"Edwards25519",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(327+0,20+292,355+97,48+292),this,54543);
 	b7->Create(L"",WS_CHILD|WS_VISIBLE|SS_WHITEFRAME|SS_SIMPLE,CRect(40,240,423,270),this);
 	dc->Create(WS_VISIBLE|WS_CHILD|PBS_SMOOTH,CRect(120,100+130,120+220,100+170),this,21);
 	dc->SetState(PBST_NORMAL);
@@ -180,6 +184,8 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 			argc = 3, argv[1] = "-hex32_24";
 		if(this->IsDlgButtonChecked(543))
 			argc = 3, argv[1] = "-wif24";
+		if(this->IsDlgButtonChecked(54543))
+			argc = 3, argv[1] = "-secretkey";
 
 		std::vector<std::string> b;
 		do
@@ -278,6 +284,43 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 			::SendMessage(hc, EM_SETTEXTEX, (WPARAM)&fw, (LPARAM)(LPCWSTR)cb);
 
 		}
+		if ((argc == 2 == false) && std::string(argv[1]) == "-secretkey")
+		{
+			if (b.size() > 24)
+			{
+				b7->SetWindowTextW(L"do not mess with it");
+				return;
+
+			}
+
+			auto c = b58decode(harbour);
+			if (c.second.size() == 32 == false)
+			{
+				b7->SetWindowTextW(L"do not mess with it");
+				return;
+
+			}
+
+			unsigned char bc[32];
+			unsigned char f[64];
+
+			crypto_sign_seed_keypair(bc, f, (unsigned char*)c.second.c_str());
+			auto t = b58encode(std::string(( char*)f, 64));
+			std::stringstream ewtr4;
+
+			ewtr4 << t.second.c_str() << std::endl << '[';
+
+			for (int k = 0; k < 64; k++) 
+				ewtr4 << (int)f[k] << ", ";
+
+			ewtr4 << ']';
+			wchar_t cb[1218] = {};
+			mbstowcs(cb, ewtr4.str().c_str(), 747);
+			SETTEXTEX fw = { 4, 1200 };
+			::SendMessage(hc, EM_SETTEXTEX, (WPARAM)&fw, (LPARAM)(LPCWSTR)cb);
+
+		}
+
 		return;
 
 	}
@@ -288,6 +331,9 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 			argc = 3, argv[1] = "-hex32_24";
 		if(this->IsDlgButtonChecked(543))
 			argc = 3, argv[1] = "-wif24";
+		if(this->IsDlgButtonChecked(54543))
+			argc = 3, argv[1] = "-secretkey";
+
 
 		if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
 		{
@@ -317,6 +363,40 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 			}
 
 			auto t = b58encode(std::string(c.second.c_str() + 1, 32 ));
+			a = t.second;
+		}
+		if ((argc == 2 == false) && std::string(argv[1]) == "-secretkey")
+		{
+			std::pair<int, std::string> c;
+			std::stringstream hc;
+			unsigned char ewd = {};
+			if(a[0] == '[') 
+			{
+				a.erase(a.cbegin());
+				a.erase(a.cend() - 1);
+
+				std::stringstream f(a);
+				while(f.bad() == false)
+				{
+					std::string ffeg;
+					f >> ffeg;
+					if (f.fail()) break;
+					unsigned long afew = sscanf(ffeg.c_str(), "%d", &ewd);
+					if(afew > 0) hc.write((char *)&ewd, 1);
+				}
+			}
+			c = hc.str().empty() == false ? std::pair(0, hc.str()) : b58decode(a);
+			unsigned short rev = c.second.size();
+			if (rev == 64 == false)
+			{
+				CString w;
+				w.Format(L"%d %d ", ewd, rev);
+				b7->SetWindowTextW(w + L"do not mess with it f " );
+				return;
+
+			}
+
+			auto t = b58encode(std::string(c.second.c_str(), 32 ));
 			a = t.second;
 		}
 
@@ -425,7 +505,7 @@ std::shared_ptr<BYTE[]> b(new BYTE[lkm]);
 
 	auto t = b58encode(wb_final);
 	std::string whydah = t.second;
-	std::string mill = whydah + '\n' + t_compressed.second;
+	 std::string mill = whydah + '\n' + t_compressed.second;
 
 
 	std::string draw = bin2hex(fwec, 16);
@@ -444,6 +524,7 @@ std::shared_ptr<BYTE[]> b(new BYTE[lkm]);
 
 	UnhookWindowsHookEx(hter);
 	::c = 0;
+
 	HWAVEOUT hWaveOut = 0;
 	WAVEFORMATEX f;
 	f.wFormatTag = WAVE_FORMAT_PCM;      // simple, uncompressed format
