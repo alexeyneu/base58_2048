@@ -370,22 +370,17 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 			std::pair<int, std::string> c;
 			std::stringstream hc;
 			unsigned char ewd = {};
-			auto woi = std::find(a.cbegin(), a.cend(), '[');
+			std::string::const_iterator woi[3] = {};
+				woi[0] = std::find(a.cbegin(), a.cend(), '[');
+				woi[1] = std::find(a.cbegin(), a.cend(), ']');
 
-			if(woi == a.cend() == false ) 
+			if(woi[0] == a.cend() == false &&  woi[1] == a.cend() == false &&std::distance(woi[0], woi[1]) > 0) 
 			{
-				a.erase(woi);
-				woi = std::find(a.cbegin(), a.cend(), ']');
-				if (woi == a.cend())
-				{
-				CString w;
-				w.Format(L"%c %c ", a[0], *(a.cend() - 1));
-				b7->SetWindowTextW(w + L"do not mess with it f " );
-				return;
 
-				}
+				a.erase(woi[0]);
 
-				a.erase(woi);
+				woi[2] = std::find(a.cbegin(), a.cend(), ']');
+				a.erase(woi[2]);
 
 				std::stringstream f(a);
 				while(f.bad() == false)
