@@ -136,7 +136,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	tux->Create(L"wif",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(0+285,20+292,45+281,48+292),this,543);
 	edw->Create(L"Edwards25519",BS_AUTORADIOBUTTON|WS_CHILD|WS_VISIBLE,CRect(327+0,20+292,355+97,48+292),this,54543);
 	b7->Create(L"",WS_CHILD|WS_VISIBLE|SS_WHITEFRAME|SS_SIMPLE,CRect(40,240,423,270),this);
-	dc->Create(WS_VISIBLE|WS_CHILD|PBS_SMOOTH,CRect(120,100+130,120+220,100+170),this,21);
+	dc->Create(WS_CHILD|PBS_SMOOTH,CRect(120,100+130,120+220,100+170),this,21);
 	dc->SetState(PBST_NORMAL);
 
 
@@ -370,10 +370,22 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 			std::pair<int, std::string> c;
 			std::stringstream hc;
 			unsigned char ewd = {};
-			if(a[0] == '[') 
+			auto woi = std::find(a.cbegin(), a.cend(), '[');
+
+			if(woi == a.cend() == false ) 
 			{
-				a.erase(a.cbegin());
-				a.erase(a.cend() - 1);
+				a.erase(woi);
+				woi = std::find(a.cbegin(), a.cend(), ']');
+				if (woi == a.cend())
+				{
+				CString w;
+				w.Format(L"%c %c ", a[0], *(a.cend() - 1));
+				b7->SetWindowTextW(w + L"do not mess with it f " );
+				return;
+
+				}
+
+				a.erase(woi);
 
 				std::stringstream f(a);
 				while(f.bad() == false)
@@ -381,8 +393,14 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 					std::string ffeg;
 					f >> ffeg;
 					if (f.fail()) break;
-					unsigned long afew = sscanf(ffeg.c_str(), "%d", &ewd);
+					long afew = sscanf(ffeg.c_str(), "%d", &ewd);
 					if(afew > 0) hc.write((char *)&ewd, 1);
+					else
+					{
+				b7->SetWindowTextW(L"do not mess with it f " );
+				return;
+
+					}
 				}
 			}
 			c = hc.str().empty() == false ? std::pair(0, hc.str()) : b58decode(a);
@@ -449,7 +467,7 @@ LRESULT CALLBACK LowLevel(int nCode, WPARAM wParam, LPARAM lParam) {
 
 		RAND_add(fwec + 4 + 8, 4, 1.7);
 		
-		if(c == 0) b7->ShowWindow(SW_HIDE);
+		if(c == 0) b7->ShowWindow(SW_HIDE), dc->ShowWindow(SW_SHOW);
 
 		c++;
 		dc->SetPos(int(100 * c/9000.0));
@@ -474,6 +492,7 @@ std::shared_ptr<BYTE[]> b(new BYTE[lkm]);
 	while (false == false)
 	{
 		WaitForSingleObject(cl, INFINITE);
+		dc->ShowWindow(0);
 	std::pair<int, std::string> c{ 0, std::string(32,' ') };
 	RAND_bytes((unsigned char*)&c.second[0], 32);
 		b7->ShowWindow(SW_SHOW);
