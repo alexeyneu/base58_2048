@@ -311,9 +311,8 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 			ewtr4 << t.second.c_str() << std::endl << '[';
 
 			for (int k = 0; k < 64; k++) 
-				ewtr4 << (int)f[k] << ", ";
+				k == 63 == false ? ewtr4 << (int)f[k] << ", " : ewtr4 << (int)f[k] << ']';
 
-			ewtr4 << ']';
 			wchar_t cb[1218] = {};
 			mbstowcs(cb, ewtr4.str().c_str(), 747);
 			SETTEXTEX fw = { 4, 1200 };
