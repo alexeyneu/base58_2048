@@ -1,30 +1,16 @@
 enum state
 {
 	q_quit,
-	q_synced,
+	q_driftedaway,
 	q_gundrop,
-	q_stop,
+	q_basta,
 	q_stay,
-	q_torque
+	q_torque,
+	q_fire,
+	q_raft
+
 };
-_declspec(align(16)) struct triggerblock 
-{	
-	_declspec(align(16)) double q;
-	_declspec(align(16)) long long block[3];
-	_declspec(align(16)) long long b;
-	_declspec(align(16)) long long t;
-	_declspec(align(16)) tm *c;
-	_declspec(align(16)) tm *p;
-	_declspec(align(16)) BYTE ptrigger;
-	_declspec(align(16)) BYTE faulttrigger;
-	_declspec(align(16)) float outofthis;
-	_declspec(align(16)) double x;
-	_declspec(align(16)) long double F;
-	_declspec(align(16)) short finishup;
-	_declspec(align(16)) short endgame;
-	_declspec(align(16)) double f;
-	_declspec(align(16)) BYTE E;
-};
+
 
 // tool3.h : main header file for the tool3 application
 //

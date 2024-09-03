@@ -176,16 +176,23 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 	char wfae[1218] = {};
 	wcstombs(wfae, remmi, 747);
 	er = wfae;
+	state sw = q_quit;
+		if (this->IsDlgButtonChecked(7987))
+			sw = q_driftedaway;
+		if (this->IsDlgButtonChecked(543))
+			sw = q_gundrop;
+		if (this->IsDlgButtonChecked(54543))
+			sw = q_basta;
 
-	if (this->IsDlgButtonChecked(73))
-	{	
+		if (this->IsDlgButtonChecked(73))
+			braze[sw] = L"compressor";
+
+		if (this->IsDlgButtonChecked(173))
+			braze[sw] = L"decompressor";
+
 		std::stringstream bt(er);
-		if(this->IsDlgButtonChecked(7987))
-			argc = 3, argv[1] = "-hex32_24";
-		if(this->IsDlgButtonChecked(543))
-			argc = 3, argv[1] = "-wif24";
-		if(this->IsDlgButtonChecked(54543))
-			argc = 3, argv[1] = "-secretkey";
+
+			std::string a = er;
 
 		std::vector<std::string> b;
 		do
@@ -322,16 +329,7 @@ void CMainFrame::tr() //  bh->Create(L"start",BS_BITMAP|WS_CHILD|WS_VISIBLE|c,CR
 
 		return;
 
-	}
-	if (this->IsDlgButtonChecked(173))
-	{
-		std::string a = er;
-		if(this->IsDlgButtonChecked(7987))
-			argc = 3, argv[1] = "-hex32_24";
-		if(this->IsDlgButtonChecked(543))
-			argc = 3, argv[1] = "-wif24";
-		if(this->IsDlgButtonChecked(54543))
-			argc = 3, argv[1] = "-secretkey";
+	
 
 
 		if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
