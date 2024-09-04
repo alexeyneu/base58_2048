@@ -122,7 +122,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	braze[q_quit]= L"quit";
 	braze[q_gundrop]= L"gundrop";
 	braze[q_stay] = L"stay";
-	braze[q_stop]= L"q_stop";
 	braze[q_torque] = L"torque";
 
 
