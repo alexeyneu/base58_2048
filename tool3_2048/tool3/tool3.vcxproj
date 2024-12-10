@@ -182,7 +182,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <ErrorReporting>None</ErrorReporting>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\New folder\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\New folder\include;$(SolutionDir)..\New folder\base;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
