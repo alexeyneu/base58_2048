@@ -1,0 +1,26 @@
+CC=c++ -c
+CFLAGS=-c -DSTRICT -G3 -Ow -W3 -Zp -Tp
+CFLAGSMT=-std=c++11 -I 'New folder/base' `pkg-config --cflags libcrypto libsodium`
+LINKER=c++
+GUILIBS=`pkg-config --libs libcrypto libsodium`
+
+docks : trail linux.bin/decompressor linux.bin/compressor
+
+linux.bin/decompressor : linux.bin/decompressor.o linux.bin/base58_2048.o
+	$(LINKER) $(GUIFLAGS)  linux.bin/decompressor.o linux.bin/base58_2048.o  $(GUILIBS) -o linux.bin/decompressor
+
+linux.bin/compressor : linux.bin/compressor.o linux.bin/base58_2048.o
+	$(LINKER) linux.bin/compressor.o linux.bin/base58_2048.o $(GUILIBS) -o linux.bin/compressor
+	 
+trail :
+ifeq ($(wildcard linux.bin/.),)
+	@mkdir linux.bin
+endif
+ linux.bin/decompressor.o: CMakeProject1/decompressor.cpp
+	$(CC) $(CFLAGSMT) CMakeProject1/decompressor.cpp -o linux.bin/decompressor.o
+
+ linux.bin/compressor.o : CMakeProject1/compressor.cpp
+	$(CC) $(CFLAGSMT) CMakeProject1/compressor.cpp -o linux.bin/compressor.o
+
+ linux.bin/base58_2048.o : CMakeProject1/base58_2048.cpp CMakeProject1/base58_2048.h
+	$(CC) $(CFLAGSMT) CMakeProject1/base58_2048.cpp -o linux.bin/base58_2048.o
