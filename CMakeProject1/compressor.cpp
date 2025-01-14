@@ -1,6 +1,7 @@
 ﻿
 
 #include "base58_2048.h"
+#include "hashgroestl.h"
 #include <sodium.h>
 #include <openssl/sha.h>
 #include <openssl/bn.h>
@@ -101,18 +102,36 @@ int main(int argc, char *argv[])
 		wb_final_compressed.insert(1, c.second);
 		wb_final_compressed.insert(wb_final_compressed.cend(), (char)0x01);
 
+		std::string h_compressed_groestl  = Groestl512(wb_final_compressed);
+		std::string hf_compressed_groestl  =Groestl512 (h_compressed_groestl);
+		auto hf_compressed_f(hf_compressed_groestl);
+		hf_compressed_f.resize(4);
+		std::string wb_final_compressed_groestl = wb_final_compressed;
+
+		wb_final_compressed_groestl.insert(wb_final_compressed.size(), hf_compressed_f);
+		auto t_compressed_groestl = b58encode(wb_final_compressed_groestl);
+
 		unsigned char h_compressed[250] = {};
 		unsigned char hf_compressed[250] = {};
-		SHA256((unsigned char *)wb_final_compressed.c_str(), wb_final_compressed.size(), h_compressed);
+		SHA256((unsigned char*)wb_final_compressed.c_str(), wb_final_compressed.size(), h_compressed);
 		SHA256(h_compressed, 32, hf_compressed);
 
-		wb_final_compressed.insert(wb_final_compressed.size(), std::string((char *)hf_compressed, 4));
+		wb_final_compressed.insert(wb_final_compressed.size(), std::string((char*)hf_compressed, 4));
 
 		auto t_compressed = b58encode(wb_final_compressed);
 
 		std::string wb_final;
 		wb_final.insert(wb_final.cbegin(), (char)0x80);
 		wb_final.insert(1, c.second);
+
+		std::string h_groestl  = Groestl512(wb_final);
+		std::string hf_groestl  =Groestl512 (h_groestl);
+		auto hf_f(h_groestl);
+		hf_f.resize(4);
+		std::string wb_final_groestl = wb_final;
+
+		wb_final_groestl.insert(wb_final.size(), hf_f);
+		auto t_groestl = b58encode(wb_final_groestl);
 
 		unsigned char h[250] = {};
 		unsigned char hf[250] = {};
@@ -125,6 +144,12 @@ int main(int argc, char *argv[])
 		std::cout << std::endl << whydah << std::endl;
 		std::string mill = t_compressed.second;
 		std::cout << std::endl << mill << std::endl;
+		std::cout << std::endl << "Groestl:" << std::endl;
+
+		std::string whydah_groestl = t_groestl.second;
+		std::cout << std::endl << whydah_groestl << std::endl;
+		std::string mill_groestl = t_compressed_groestl.second;
+		std::cout << std::endl << mill_groestl << std::endl;
 
 	}
 	if ((argc == 2 == false) && std::string(argv[1]) == "-hex32_24")
