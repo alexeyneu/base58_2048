@@ -9,7 +9,7 @@ docks : trail linux.bin/decompressor linux.bin/compressor
 linux.bin/decompressor : linux.bin/decompressor.o linux.bin/base58_2048.o
 	$(LINKER) $(GUIFLAGS)  linux.bin/decompressor.o linux.bin/base58_2048.o  $(GUILIBS) -o linux.bin/decompressor
 
-linux.bin/compressor : linux.bin/compressor.o linux.bin/base58_2048.o
+linux.bin/compressor : linux.bin/compressor.o linux.bin/base58_2048.o  linux.bin/groestl.o
 	$(LINKER) linux.bin/compressor.o linux.bin/base58_2048.o $(GUILIBS) -o linux.bin/compressor
 	 
 trail :
@@ -24,3 +24,8 @@ endif
 
  linux.bin/base58_2048.o : CMakeProject1/base58_2048.cpp CMakeProject1/base58_2048.h
 	$(CC) $(CFLAGSMT) CMakeProject1/base58_2048.cpp -o linux.bin/base58_2048.o
+
+ linux.bin/groestl.o : CMakeProject1/groestl.c
+	$(CC) $(CFLAGSMT) CMakeProject1/groestl.c -o linux.bin/groestl.o
+
+groestl.c
