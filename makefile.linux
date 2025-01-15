@@ -19,7 +19,7 @@ endif
  linux.bin/decompressor.o: CMakeProject1/decompressor.cpp
 	$(CC) $(CFLAGSMT) CMakeProject1/decompressor.cpp -o linux.bin/decompressor.o
 
- linux.bin/compressor.o : CMakeProject1/compressor.cpp
+ linux.bin/compressor.o : CMakeProject1/compressor.cpp CMakeProject1/hashgroestl.hpp
 	$(CC) $(CFLAGSMT) CMakeProject1/compressor.cpp -o linux.bin/compressor.o
 
  linux.bin/base58_2048.o : CMakeProject1/base58_2048.cpp CMakeProject1/base58_2048.h

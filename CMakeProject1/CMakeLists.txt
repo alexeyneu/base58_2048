@@ -5,7 +5,7 @@ cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
 add_executable (decompressor "decompressor.cpp" "base58_2048.h"  "base58_2048.cpp")
-add_executable (compressor "compressor.cpp" "base58_2048.h"   "base58_2048.cpp" "groestl.c")
+add_executable (compressor "compressor.cpp" "base58_2048.h"   "base58_2048.cpp" "groestl.c" "hashgroestl.hpp")
 include_directories("${PROJECT_SOURCE_DIR}/New Folder/include" "${PROJECT_SOURCE_DIR}/New Folder/base")
 
 

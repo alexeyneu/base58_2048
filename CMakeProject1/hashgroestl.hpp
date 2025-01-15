@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2012 The DigiByte developers
+// Copyright (c) 2025 Alex Neudatchin
+
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #ifndef HASH_GROESTL
 #define HASH_GROESTL
 #include "sph_groestl.h"
-#include <openssl/sha.h>
 #include <vector>
 
 template<typename T1>

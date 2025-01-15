@@ -1,7 +1,7 @@
 ﻿
 
 #include "base58_2048.h"
-#include "hashgroestl.h"
+#include "hashgroestl.hpp"
 #include <sodium.h>
 #include <openssl/sha.h>
 #include <openssl/bn.h>
