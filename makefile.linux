@@ -1,6 +1,6 @@
 CC=c++ -c
 CFLAGS=-c -DSTRICT -G3 -Ow -W3 -Zp -Tp
-CFLAGSMT=-std=c++11 -I 'New folder/base' `pkg-config --cflags libcrypto libsodium`
+CFLAGSMT=-std=c++11 -I"New folder/base" `pkg-config --cflags libcrypto libsodium` -fpermissive
 LINKER=c++
 GUILIBS=`pkg-config --libs libcrypto libsodium`
 
@@ -9,8 +9,8 @@ docks : trail linux.bin/decompressor linux.bin/compressor
 linux.bin/decompressor : linux.bin/decompressor.o linux.bin/base58_2048.o
 	$(LINKER) $(GUIFLAGS)  linux.bin/decompressor.o linux.bin/base58_2048.o  $(GUILIBS) -o linux.bin/decompressor
 
-linux.bin/compressor : linux.bin/compressor.o linux.bin/base58_2048.o  linux.bin/groestl.o
-	$(LINKER) linux.bin/compressor.o linux.bin/base58_2048.o $(GUILIBS) -o linux.bin/compressor
+linux.bin/compressor : linux.bin/compressor.o linux.bin/base58_2048.o linux.bin/groestl.o
+	$(LINKER) linux.bin/compressor.o linux.bin/base58_2048.o linux.bin/groestl.o $(GUILIBS) -o linux.bin/compressor
 	 
 trail :
 ifeq ($(wildcard linux.bin/.),)
@@ -27,5 +27,3 @@ endif
 
  linux.bin/groestl.o : CMakeProject1/groestl.c
 	$(CC) $(CFLAGSMT) CMakeProject1/groestl.c -o linux.bin/groestl.o
-
-groestl.c
